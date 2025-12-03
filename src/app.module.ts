@@ -2,8 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
+import { SolicitudesModule } from './solicitudes/solicitudes.module'; // ← AGREGAR
 import { Usuario } from './auth/entities/usuario.entity';
-// importa otras entidades si es necesario (Solicitud, Producto, etc.)
+import { Solicitud } from './solicitudes/entities/solicitud.entity'; // ← AGREGAR
 
 @Module({
   imports: [
@@ -15,12 +16,12 @@ import { Usuario } from './auth/entities/usuario.entity';
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
-      entities: [Usuario /*, ...otras entidades*/],
-      synchronize: false, // en dev true, en prod false
-      options: { encrypt: false }, // o true si tienes TLS
+      entities: [Usuario, Solicitud], // ← AGREGAR Solicitud
+      synchronize: false,
+      options: { encrypt: false },
     }),
     AuthModule,
-    // Otros módulos...
+    SolicitudesModule, // ← AGREGAR
   ],
 })
 export class AppModule {}
