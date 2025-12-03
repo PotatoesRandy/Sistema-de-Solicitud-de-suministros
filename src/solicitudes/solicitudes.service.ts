@@ -5,9 +5,10 @@ import { Solicitud } from './entities/solicitud.entity';
 
 @Injectable()
 export class SolicitudesService {
-  @InjectRepository(Solicitud)
-private readonly solicitudRepo: Repository<Solicitud>
-
+  constructor(
+    @InjectRepository(Solicitud)
+    private readonly solicitudRepo: Repository<Solicitud>,
+  ) {}
 
   // Crear
   crear(dto: any) {
@@ -27,12 +28,11 @@ private readonly solicitudRepo: Repository<Solicitud>
     return solicitud;
   }
 
-  // Aprobar
+  // Aprobar (sin modificar estado porque no existe en la BD)
   async aprobar(id: number) {
     const solicitud = await this.buscar(id);
-
-    solicitud.estado = 'APROBADA';  // ← Asegúrate de tener este campo en tu entidad
-
-    return this.solicitudRepo.save(solicitud);
+    // Por ahora solo retorna la solicitud
+    // Más adelante puedes agregar lógica de aprobación
+    return solicitud;
   }
 }

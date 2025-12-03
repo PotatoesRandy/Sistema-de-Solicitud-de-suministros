@@ -1,6 +1,5 @@
 export class CreateSolicitudDto {
-  usuarioId: number;
-  articulo: string;
+  nombre_solicitud: string;
   cantidad: number;
-  motivo: string;
+  departamento_solicitud?: string; 
 }

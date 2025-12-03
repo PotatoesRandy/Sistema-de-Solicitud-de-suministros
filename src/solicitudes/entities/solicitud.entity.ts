@@ -1,22 +1,16 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity('solicitudes')
+@Entity('Solicitud') // ← Cambio aquí: era 'solicitudes'
 export class Solicitud {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ name: 'id_solicitud' }) // ← Mapeo al nombre real
   id: number;
 
-  @Column()
-  usuarioId: number;
+  @Column({ name: 'nombre_solicitud', type: 'varchar', length: 150 })
+  nombre_solicitud: string;
 
-  @Column()
-  articulo: string;
-
-  @Column()
+  @Column({ name: 'cantidad', type: 'int' })
   cantidad: number;
 
-  @Column()
-  motivo: string;
-
-  @Column({ default: 'pendiente' })
-  estado: string;
+  @Column({ name: 'departamento_solicitud', type: 'varchar', length: 100, nullable: true })
+  departamento_solicitud: string;
 }
