@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity('Solicitud') // ← Cambio aquí: era 'solicitudes'
+@Entity('solicitudes') // ← Cambio aquí: era 'solicitudes'
 export class Solicitud {
   @PrimaryGeneratedColumn({ name: 'id_solicitud' }) // ← Mapeo al nombre real
   id: number;

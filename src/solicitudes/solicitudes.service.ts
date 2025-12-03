@@ -24,7 +24,8 @@ export class SolicitudesService {
   // Buscar
   async buscar(id: number) {
     const solicitud = await this.solicitudRepo.findOne({ where: { id } });
-    if (!solicitud) throw new NotFoundException('Solicitud no encontrada');
+    if (!solicitud) return []    
+   // if (!solicitud) throw new NotFoundException('Solicitud no encontrada');
     return solicitud;
   }
 
