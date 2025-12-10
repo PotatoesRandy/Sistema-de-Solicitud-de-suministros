@@ -34,19 +34,28 @@ export class AuthService {
     return safe;
   }
 
-  async login(dto: LoginDto) {
-    const user = await this.usuarioRepo.findOne({ where: { usuario: dto.usuario } });
-    if (!user) throw new UnauthorizedException('Credenciales inválidas');
+  // [CORRECCIÓN APLICADA EN auth.service.ts]
 
-    const match = await bcrypt.compare(dto.contrasena, user.contrasena);
-    if (!match) throw new UnauthorizedException('Credenciales inválidas');
+async login(dto: LoginDto) {
+  // --- CAMBIO AQUÍ ---
+  const user = await this.usuarioRepo.findOne({
+    where: { usuario: dto.usuario },
+    select: ['id_usuario', 'nombre', 'usuario', 'rol', 'contrasena'], // <--- ¡Asegúrate de incluir 'contrasena'!
+  });
+  // -------------------
 
-    const payload = { username: user.usuario, sub: user.id_usuario, rol: user.rol };
-    const access_token = this.jwtService.sign(payload);
+  if (!user) throw new UnauthorizedException('Credenciales inválidas');
 
-    return {
-      access_token,
-      user: { id_usuario: user.id_usuario, nombre: user.nombre, usuario: user.usuario, rol: user.rol },
-    };
+  // Continúa la lógica de comparación
+  const match = await bcrypt.compare(dto.contrasena, user.contrasena);
+  if (!match) throw new UnauthorizedException('Credenciales inválidas');
+
+  const payload = { username: user.usuario, sub: user.id_usuario, rol: user.rol };
+  const access_token = this.jwtService.sign(payload);
+
+  return {
+    access_token,
+    user: { id_usuario: user.id_usuario, nombre: user.nombre, usuario: user.usuario, rol: user.rol },
+  };
   }
 }

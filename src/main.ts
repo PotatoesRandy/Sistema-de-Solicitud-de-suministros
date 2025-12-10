@@ -21,5 +21,7 @@ async function bootstrap() {
   console.log('📝 Endpoints disponibles:');
   console.log('   POST http://localhost:3000/auth/register');
   console.log('   POST http://localhost:3000/auth/login');
+  console.log('   GET  http://localhost:3000/solicitudes');
+  
 }
 bootstrap();
