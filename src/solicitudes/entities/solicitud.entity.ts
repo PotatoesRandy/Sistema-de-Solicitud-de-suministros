@@ -2,7 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity('solicitudes')
 export class Solicitud {
-  @PrimaryGeneratedColumn({ name: 'id_solicitud' }) // ← Mapeo al nombre real
+  @PrimaryGeneratedColumn({ name: 'id_solicitud' })
   id: number;
 
   @Column({ name: 'nombre_solicitud', type: 'varchar', length: 150 })
@@ -13,4 +13,7 @@ export class Solicitud {
 
   @Column({ name: 'departamento_solicitud', type: 'varchar', length: 100, nullable: true })
   departamento_solicitud: string;
+
+  @Column({ name: 'id_usuario', type: 'int' })
+  id_usuario: number; // 👈 IMPORTANTÍSIMO
 }

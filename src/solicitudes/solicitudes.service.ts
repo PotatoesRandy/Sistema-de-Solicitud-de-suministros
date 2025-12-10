@@ -2,38 +2,52 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Solicitud } from './entities/solicitud.entity';
+import { CreateSolicitudDto } from './dto/create-solicitud.dto';
 
 @Injectable()
 export class SolicitudesService {
   constructor(
     @InjectRepository(Solicitud)
-    private readonly solicitudRepo: Repository<Solicitud>,
+    private readonly repo: Repository<Solicitud>,
   ) {}
 
-  // Crear
-  crear(dto: any) {
-    const nueva = this.solicitudRepo.create(dto);
-    return this.solicitudRepo.save(nueva);
+  // Crear una solicitud y asignar automaticamente el usuario del token
+  async crear(dto: CreateSolicitudDto, user: any) {
+    const solicitud = this.repo.create({
+      ...dto,
+      id_usuario: user.sub, // 👈 EL ID DEL USUARIO QUE ESTÁ EN EL TOKEN
+    });
+
+    return await this.repo.save(solicitud);
   }
 
-  // Listar
-  listar() {
-    return this.solicitudRepo.find();
+  // Listar todas las solicitudes
+  async listar() {
+    return await this.repo.find();
   }
 
-  // Buscar
+  // Buscar una solicitud por ID
   async buscar(id: number) {
-    const solicitud = await this.solicitudRepo.findOne({ where: { id } });
-    if (!solicitud) return []    
-   // if (!solicitud) throw new NotFoundException('Solicitud no encontrada');
+    const solicitud = await this.repo.findOne({ where: { id } });
+
+    if (!solicitud) {
+      throw new NotFoundException('Solicitud no encontrada');
+    }
+
     return solicitud;
   }
 
-  // Aprobar (sin modificar estado porque no existe en la BD)
+  // Aprobar una solicitud (actualizas lo que necesites)
   async aprobar(id: number) {
-    const solicitud = await this.buscar(id);
-    // Por ahora solo retorna la solicitud
-    // Más adelante puedes agregar lógica de aprobación
-    return solicitud;
+    const solicitud = await this.repo.findOne({ where: { id } });
+
+    if (!solicitud) {
+      throw new NotFoundException('Solicitud no encontrada');
+    }
+
+    // Aquí puedes actualizar un campo "estado" si tu tabla lo tiene
+    // solicitud.estado = "Aprobada";
+
+    return await this.repo.save(solicitud);
   }
 }

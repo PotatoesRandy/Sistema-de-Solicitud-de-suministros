@@ -16,7 +16,10 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto) {
-    const exists = await this.usuarioRepo.findOne({ where: { usuario: dto.usuario } });
+    const exists = await this.usuarioRepo.findOne({
+      where: { usuario: dto.usuario },
+    });
+
     if (exists) throw new ConflictException('El usuario ya existe');
 
     const hashed = await bcrypt.hash(dto.contrasena, 10);
@@ -31,31 +34,39 @@ export class AuthService {
 
     const saved = await this.usuarioRepo.save(user);
     const { contrasena, ...safe } = saved as any;
+
     return safe;
   }
 
-  // [CORRECCIÓN APLICADA EN auth.service.ts]
+  async login(dto: LoginDto) {
+    const user = await this.usuarioRepo.findOne({
+      where: { usuario: dto.usuario },
+      select: ['id_usuario', 'nombre', 'usuario', 'rol', 'contrasena'],
+    });
 
-async login(dto: LoginDto) {
-  // --- CAMBIO AQUÍ ---
-  const user = await this.usuarioRepo.findOne({
-    where: { usuario: dto.usuario },
-    select: ['id_usuario', 'nombre', 'usuario', 'rol', 'contrasena'], // <--- ¡Asegúrate de incluir 'contrasena'!
-  });
-  // -------------------
+    if (!user) throw new UnauthorizedException('Credenciales inválidas');
 
-  if (!user) throw new UnauthorizedException('Credenciales inválidas');
+    const match = await bcrypt.compare(dto.contrasena, user.contrasena);
+    if (!match) throw new UnauthorizedException('Credenciales inválidas');
 
-  // Continúa la lógica de comparación
-  const match = await bcrypt.compare(dto.contrasena, user.contrasena);
-  if (!match) throw new UnauthorizedException('Credenciales inválidas');
+    // Agregamos el nombre al payload
+    const payload = {
+      username: user.usuario,
+      sub: user.id_usuario,
+      rol: user.rol,
+      nombre: user.nombre,
+    };
 
-  const payload = { username: user.usuario, sub: user.id_usuario, rol: user.rol };
-  const access_token = this.jwtService.sign(payload);
+    const access_token = this.jwtService.sign(payload);
 
-  return {
-    access_token,
-    user: { id_usuario: user.id_usuario, nombre: user.nombre, usuario: user.usuario, rol: user.rol },
-  };
+    return {
+      access_token,
+      user: {
+        id_usuario: user.id_usuario,
+        nombre: user.nombre,
+        usuario: user.usuario,
+        rol: user.rol,
+      },
+    };
   }
 }
