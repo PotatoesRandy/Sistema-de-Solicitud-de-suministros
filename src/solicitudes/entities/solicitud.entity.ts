@@ -14,6 +14,9 @@ export class Solicitud {
   @Column({ name: 'departamento_solicitud', type: 'varchar', length: 100, nullable: true })
   departamento_solicitud: string;
 
-  @Column({ name: 'id_usuario', type: 'int' })
-  id_usuario: number; // 👈 IMPORTANTÍSIMO
+  @Column({ name: 'id_usuario', type: 'int', nullable: true })
+  id_usuario: number;
+
+  @Column({ name: 'estado', type: 'varchar', length: 50, default: 'PENDIENTE' })
+  estado: string;
 }
