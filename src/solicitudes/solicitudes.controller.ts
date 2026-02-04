@@ -1,13 +1,13 @@
 import { Controller, Post, Get, Body, Param, Patch, HttpException, HttpStatus } from '@nestjs/common';
 import { SolicitudesService } from './solicitudes.service';
-import { CrearSolicitudDto } from '../auth/dto/crear-solicitud.dto';
+import { CreateSolicitudDto } from './dto/create-solicitud.dto';
 
 @Controller('solicitudes')
 export class SolicitudesController {
   constructor(private readonly service: SolicitudesService) {}
 
   @Post()
-  crear(@Body() dto: CrearSolicitudDto) {
+  crear(@Body() dto: CreateSolicitudDto) {
     return this.service.crear(dto);
   }
 
