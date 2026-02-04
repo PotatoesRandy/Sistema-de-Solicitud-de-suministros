@@ -2,9 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Connection, Repository } from 'typeorm';
-import { CrearSolicitudDto } from '../auth/dto/crear-solicitud.dto';
+import { CreateSolicitudDto } from './dto/create-solicitud.dto';
 import { AgregarDetalleDto } from '../auth/dto/agregar-detalle.dto';
-import { CrearSolicitudCompletaDto } from '../auth/dto/crear-solicitud-completa.dto';
 import { Solicitud } from './entities/solicitud.entity';
 
 @Injectable()
@@ -19,11 +18,13 @@ export class SolicitudesService {
   /**
    * Crear una solicitud nueva usando TypeORM Repository
    */
-  async crearSolicitud(dto: CrearSolicitudDto): Promise<any> {
+  async crearSolicitud(dto: CreateSolicitudDto): Promise<any> {
     try {
       // Crear solicitud usando el repositorio de TypeORM
       const nuevaSolicitud = this.solicitudRepo.create({
-        descripcion_solicitud: dto.descripcion_solicitud,
+        nombre_solicitud: dto.nombre_solicitud,
+        cantidad: dto.cantidad,
+        departamento_solicitud: dto.departamento_solicitud,
         estado: 'PENDIENTE',
       });
 
@@ -91,7 +92,7 @@ export class SolicitudesService {
   }
 
   // Método para el controlador
-  async crear(dto: CrearSolicitudDto) {
+  async crear(dto: CreateSolicitudDto) {
     return this.crearSolicitud(dto);
   }
 
