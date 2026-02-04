@@ -17,7 +17,7 @@ export class SolicitudesService {
   ) {}
 
   /**
-   * Crear una solicitud nueva
+   * Crear una solicitud nueva usando stored procedure
    */
   async crearSolicitud(dto: CrearSolicitudDto): Promise<any> {
     const queryRunner = this.connection.createQueryRunner();
@@ -25,15 +25,16 @@ export class SolicitudesService {
     await queryRunner.startTransaction();
 
     try {
+      // Ejecutar el stored procedure con OUTPUT
       const result = await queryRunner.query(
-        `DECLARE @id_solicitud INT;
+        `DECLARE @id_solicitud_out INT;
          EXEC sp_crear_solicitud 
-           @p_descripcion = ?,
-           @p_id_departamento = ?,
-           @p_id_usuario = ?,
-           @p_usuario_accion = ?,
-           @p_id_solicitud = @id_solicitud OUTPUT;
-         SELECT @id_solicitud as id_solicitud;`,
+           @p_descripcion = @0,
+           @p_id_departamento = @1,
+           @p_id_usuario = @2,
+           @p_usuario_accion = @3,
+           @p_id_solicitud = @id_solicitud_out OUTPUT;
+         SELECT @id_solicitud_out as id_solicitud;`,
         [
           dto.descripcion_solicitud,
           dto.id_departamento,
@@ -43,10 +44,12 @@ export class SolicitudesService {
       );
 
       await queryRunner.commitTransaction();
+      
       return {
         success: true,
         id_solicitud: result[0]?.id_solicitud,
         mensaje: 'Solicitud creada exitosamente',
+        data: dto
       };
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -70,9 +73,9 @@ export class SolicitudesService {
     try {
       await queryRunner.query(
         `EXEC sp_agregar_detalle_solicitud
-           @p_id_solicitud = ?,
-           @p_id_producto = ?,
-           @p_cantidad = ?`,
+           @p_id_solicitud = @0,
+           @p_id_producto = @1,
+           @p_cantidad = @2`,
         [id_solicitud, dto.id_producto, dto.cantidad_solicitada],
       );
 
