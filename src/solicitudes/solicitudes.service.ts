@@ -17,7 +17,7 @@ export class SolicitudesService {
   ) {}
 
   /**
-   * Crear una solicitud nueva usando stored procedure
+   * Crear una solicitud nueva usando SQL directo
    */
   async crearSolicitud(dto: CrearSolicitudDto): Promise<any> {
     const queryRunner = this.connection.createQueryRunner();
@@ -25,16 +25,18 @@ export class SolicitudesService {
     await queryRunner.startTransaction();
 
     try {
-      // Ejecutar el stored procedure con OUTPUT
+      // Insertar directamente sin stored procedure
       const result = await queryRunner.query(
-        `DECLARE @id_solicitud_out INT;
-         EXEC sp_crear_solicitud 
-           @p_descripcion = @0,
-           @p_id_departamento = @1,
-           @p_id_usuario = @2,
-           @p_usuario_accion = @3,
-           @p_id_solicitud = @id_solicitud_out OUTPUT;
-         SELECT @id_solicitud_out as id_solicitud;`,
+        `INSERT INTO solicitudes (
+          descripcion_solicitud,
+          id_departamento,
+          id_usuario,
+          usuario_accion,
+          estado,
+          fecha_creacion
+        )
+        OUTPUT INSERTED.id_solicitud
+        VALUES (@0, @1, @2, @3, 'PENDIENTE', GETDATE());`,
         [
           dto.descripcion_solicitud,
           dto.id_departamento,
@@ -49,7 +51,12 @@ export class SolicitudesService {
         success: true,
         id_solicitud: result[0]?.id_solicitud,
         mensaje: 'Solicitud creada exitosamente',
-        data: dto
+        data: {
+          descripcion_solicitud: dto.descripcion_solicitud,
+          id_departamento: dto.id_departamento,
+          id_usuario: dto.id_usuario,
+          estado: 'PENDIENTE'
+        }
       };
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -71,11 +78,26 @@ export class SolicitudesService {
     await queryRunner.startTransaction();
 
     try {
+      // Validar que la solicitud existe
+      const solicitudExists = await queryRunner.query(
+        `SELECT id_solicitud FROM solicitudes WHERE id_solicitud = @0`,
+        [id_solicitud]
+      );
+
+      if (!solicitudExists || solicitudExists.length === 0) {
+        throw new Error('La solicitud no existe');
+      }
+
+      // Insertar detalle
       await queryRunner.query(
-        `EXEC sp_agregar_detalle_solicitud
-           @p_id_solicitud = @0,
-           @p_id_producto = @1,
-           @p_cantidad = @2`,
+        `INSERT INTO Solicitud_Detalle (
+          id_solicitud,
+          id_producto,
+          cantidad_solicitada,
+          estado_detalle,
+          fecha_creacion
+        )
+        VALUES (@0, @1, @2, 'PENDIENTE', GETDATE());`,
         [id_solicitud, dto.id_producto, dto.cantidad_solicitada],
       );
 
