@@ -1,20 +1,14 @@
-import { Controller, Post, Get, Put, Delete, Param, Body, HttpException, HttpStatus, ParseIntPipe } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, Patch } from '@nestjs/common';
 import { SolicitudesService } from './solicitudes.service';
-import { CrearSolicitudDto } from '../auth/dto/crear-solicitud.dto';
-import { AgregarDetalleDto } from '../auth/dto/agregar-detalle.dto';
-import { CrearSolicitudCompletaDto } from '../auth/dto/crear-solicitud-completa.dto';
+import { CreateSolicitudDto } from './dto/create-solicitud.dto';
 
 @Controller('solicitudes')
 export class SolicitudesController {
   constructor(private readonly service: SolicitudesService) {}
 
   @Post()
-  async crear(@Body() dto: CrearSolicitudDto) {
-    try {
-      return await this.service.crearSolicitud(dto);
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    }
+  crear(@Body() dto: CreateSolicitudDto) {
+    return this.service.crear(dto);
   }
 
   @Get()
@@ -26,54 +20,20 @@ export class SolicitudesController {
     }
   }
 
+  @Get('estado/:estado')
+  listarPorEstado(@Param('estado') estado: string) {
+    return this.service.listarPorEstado(estado);
+  }
+
   @Get(':id')
-  async buscar(@Param('id', ParseIntPipe) id: number) {
-    try {
-      return await this.service.obtenerSolicitudCompleta(id);
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-    }
+  buscar(@Param('id') id: number) {
+    return this.service.buscar(id);
   }
 
-  @Post(':id/detalles')
-  async agregarDetalle(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() dto: AgregarDetalleDto,
-  ) {
-    try {
-      return await this.service.agregarDetalle(id, dto);
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    }
+  @Patch(':id/aprobar')
+  aprobar(@Param('id') id: number) {
+    return this.service.aprobar(id);
   }
 
-  @Post('completa')
-  async crearCompleta(@Body() dto: CrearSolicitudCompletaDto) {
-    try {
-      return await this.service.crearSolicitudCompleta(dto);
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    }
-  }
-
-  @Put(':id/estado')
-  async aprobar(
-    @Param('id', ParseIntPipe) id: number,
-    @Body('estado') estado: string,
-  ) {
-    try {
-      return await this.service.actualizarEstado(id, estado);
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    }
-  }
-
-  @Delete(':id')
-  async eliminar(@Param('id', ParseIntPipe) id: number) {
-    try {
-      return await this.service.eliminarSolicitud(id);
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
+  
 }

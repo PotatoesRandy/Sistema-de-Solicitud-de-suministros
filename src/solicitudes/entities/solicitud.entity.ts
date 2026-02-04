@@ -3,11 +3,8 @@ import { SolicitudDetalle } from './solicitud-detalle.entity';
 
 @Entity('Solicitud')
 export class Solicitud {
-  @PrimaryGeneratedColumn()
-  id_solicitud: number;
-
-  @Column()
-  id_usuario: number;
+  @PrimaryGeneratedColumn({ name: 'id_solicitud' }) // ← Mapeo al nombre real
+  id: number;
 
   @Column()
   id_departamento: number;
@@ -18,9 +15,6 @@ export class Solicitud {
   @Column({ default: 'Pendiente' })
   estado: string;
 
-  @Column({ type: 'datetime', default: () => 'GETDATE()' })
-  fecha_creacion: Date;
-
-  @OneToMany(() => SolicitudDetalle, detalle => detalle.solicitud)
-  detalles: SolicitudDetalle[];
+  @Column({ name: 'departamento_solicitud', type: 'varchar', length: 100, nullable: true })
+  departamento_solicitud: string;
 }
