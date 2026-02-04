@@ -4,7 +4,7 @@ import { SolicitudDetalle } from './solicitud-detalle.entity';
 @Entity('solicitudes')
 export class Solicitud {
   @PrimaryGeneratedColumn({ name: 'id_solicitud' })
-  id: number;
+  id_solicitud: number;
 
   @Column({ nullable: true })
   nombre_solicitud: string;
