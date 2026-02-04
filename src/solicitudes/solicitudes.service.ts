@@ -25,7 +25,10 @@ export class SolicitudesService {
         nombre_solicitud: dto.nombre_solicitud,
         cantidad: dto.cantidad,
         departamento_solicitud: dto.departamento_solicitud,
+        id_usuario: dto.id_usuario,
+        usuario_accion: dto.usuario_accion,
         estado: 'PENDIENTE',
+        fecha_creacion: new Date(),
       });
 
       const solicitudGuardada = await this.solicitudRepo.save(nuevaSolicitud);
