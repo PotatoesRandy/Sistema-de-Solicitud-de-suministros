@@ -1,14 +1,20 @@
-import { Controller, Post, Get, Body, Param, Patch, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, Patch, HttpException, HttpStatus, UseGuards, Req } from '@nestjs/common';
 import { SolicitudesService } from './solicitudes.service';
 import { CreateSolicitudDto } from './dto/create-solicitud.dto';
+import { JwtAuthGuard } from '../auth/jwt/jwt.guard';
 
 @Controller('solicitudes')
 export class SolicitudesController {
   constructor(private readonly service: SolicitudesService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  crear(@Body() dto: CreateSolicitudDto) {
-    return this.service.crear(dto);
+  crear(@Body() dto: CreateSolicitudDto, @Req() req) {
+    // Extraer datos del usuario del token JWT
+    const id_usuario = req.user.sub;
+    const usuario_accion = req.user.username;
+    
+    return this.service.crear(dto, id_usuario, usuario_accion);
   }
 
   @Get()
