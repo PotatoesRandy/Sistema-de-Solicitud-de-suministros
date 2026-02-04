@@ -16,11 +16,6 @@ export class SolicitudesService {
     private solicitudRepo: Repository<Solicitud>,
   ) {}
 
-  // resto del código...
-
-
-
-
   /**
    * Crear una solicitud nueva
    */
@@ -33,10 +28,10 @@ export class SolicitudesService {
       const result = await queryRunner.query(
         `DECLARE @id_solicitud INT;
          EXEC sp_crear_solicitud 
-           @p_descripcion = @desc,
-           @p_id_departamento = @dept,
-           @p_id_usuario = @usuario,
-           @p_usuario_accion = @accion,
+           @p_descripcion = ?,
+           @p_id_departamento = ?,
+           @p_id_usuario = ?,
+           @p_usuario_accion = ?,
            @p_id_solicitud = @id_solicitud OUTPUT;
          SELECT @id_solicitud as id_solicitud;`,
         [
@@ -50,7 +45,7 @@ export class SolicitudesService {
       await queryRunner.commitTransaction();
       return {
         success: true,
-        id_solicitud: result[0].id_solicitud,
+        id_solicitud: result[0]?.id_solicitud,
         mensaje: 'Solicitud creada exitosamente',
       };
     } catch (error) {
@@ -75,9 +70,9 @@ export class SolicitudesService {
     try {
       await queryRunner.query(
         `EXEC sp_agregar_detalle_solicitud
-           @p_id_solicitud = @sol,
-           @p_id_producto = @prod,
-           @p_cantidad = @cant`,
+           @p_id_solicitud = ?,
+           @p_id_producto = ?,
+           @p_cantidad = ?`,
         [id_solicitud, dto.id_producto, dto.cantidad_solicitada],
       );
 
