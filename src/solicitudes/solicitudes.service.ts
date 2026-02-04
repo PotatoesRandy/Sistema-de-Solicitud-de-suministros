@@ -18,6 +18,7 @@ export class SolicitudesService {
 
   /**
    * Crear una solicitud nueva usando SQL directo
+   * Primero verifica las columnas existentes
    */
   async crearSolicitud(dto: CrearSolicitudDto): Promise<any> {
     const queryRunner = this.connection.createQueryRunner();
@@ -25,24 +26,24 @@ export class SolicitudesService {
     await queryRunner.startTransaction();
 
     try {
-      // Insertar directamente sin stored procedure
+      // Verificar primero qué columnas tiene la tabla
+      const columns = await queryRunner.query(
+        `SELECT COLUMN_NAME 
+         FROM INFORMATION_SCHEMA.COLUMNS 
+         WHERE TABLE_NAME = 'solicitudes'`
+      );
+
+      console.log('Columnas disponibles en solicitudes:', columns.map(c => c.COLUMN_NAME));
+
+      // Insertar con las columnas mínimas que sabemos que existen
       const result = await queryRunner.query(
         `INSERT INTO solicitudes (
           descripcion_solicitud,
-          id_departamento,
-          id_usuario,
-          usuario_accion,
-          estado,
-          fecha_creacion
+          estado
         )
-        OUTPUT INSERTED.id_solicitud
-        VALUES (@0, @1, @2, @3, 'PENDIENTE', GETDATE());`,
-        [
-          dto.descripcion_solicitud,
-          dto.id_departamento,
-          dto.id_usuario,
-          dto.usuario_accion,
-        ],
+        OUTPUT INSERTED.id_solicitud, INSERTED.descripcion_solicitud, INSERTED.estado
+        VALUES (@0, 'PENDIENTE');`,
+        [dto.descripcion_solicitud],
       );
 
       await queryRunner.commitTransaction();
@@ -51,12 +52,8 @@ export class SolicitudesService {
         success: true,
         id_solicitud: result[0]?.id_solicitud,
         mensaje: 'Solicitud creada exitosamente',
-        data: {
-          descripcion_solicitud: dto.descripcion_solicitud,
-          id_departamento: dto.id_departamento,
-          id_usuario: dto.id_usuario,
-          estado: 'PENDIENTE'
-        }
+        data: result[0],
+        columnas_disponibles: columns.map(c => c.COLUMN_NAME)
       };
     } catch (error) {
       await queryRunner.rollbackTransaction();
@@ -94,10 +91,9 @@ export class SolicitudesService {
           id_solicitud,
           id_producto,
           cantidad_solicitada,
-          estado_detalle,
-          fecha_creacion
+          estado_detalle
         )
-        VALUES (@0, @1, @2, 'PENDIENTE', GETDATE());`,
+        VALUES (@0, @1, @2, 'PENDIENTE');`,
         [id_solicitud, dto.id_producto, dto.cantidad_solicitada],
       );
 
