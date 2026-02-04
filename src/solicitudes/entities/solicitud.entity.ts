@@ -9,20 +9,8 @@ export class Solicitud {
   @Column({ nullable: true })
   descripcion_solicitud: string;
 
-  @Column({ nullable: true })
-  id_departamento: number;
-
-  @Column({ nullable: true })
-  id_usuario: number;
-
-  @Column({ nullable: true })
-  usuario_accion: string;
-
-  @Column({ default: 'PENDIENTE' })
+  @Column({ default: 'PENDIENTE', nullable: true })
   estado: string;
-
-  @Column({ type: 'datetime', default: () => 'GETDATE()', nullable: true })
-  fecha_creacion: Date;
 
   @OneToMany(() => SolicitudDetalle, detalle => detalle.solicitud)
   detalles: SolicitudDetalle[];
