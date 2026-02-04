@@ -3,7 +3,7 @@ import { SolicitudDetalle } from './solicitud-detalle.entity';
 
 @Entity('Solicitud')
 export class Solicitud {
-  @PrimaryGeneratedColumn({ name: 'id_solicitud' }) // ← Mapeo al nombre real
+  @PrimaryGeneratedColumn({ name: 'id_solicitud' })
   id: number;
 
   @Column()
@@ -17,4 +17,7 @@ export class Solicitud {
 
   @Column({ name: 'departamento_solicitud', type: 'varchar', length: 100, nullable: true })
   departamento_solicitud: string;
+
+  @OneToMany(() => SolicitudDetalle, detalle => detalle.solicitud)
+  detalles: SolicitudDetalle[];
 }
