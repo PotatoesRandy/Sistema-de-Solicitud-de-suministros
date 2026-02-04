@@ -17,49 +17,27 @@ export class SolicitudesService {
   ) {}
 
   /**
-   * Crear una solicitud nueva usando SQL directo
-   * Primero verifica las columnas existentes
+   * Crear una solicitud nueva usando TypeORM Repository
    */
   async crearSolicitud(dto: CrearSolicitudDto): Promise<any> {
-    const queryRunner = this.connection.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
     try {
-      // Verificar primero qué columnas tiene la tabla
-      const columns = await queryRunner.query(
-        `SELECT COLUMN_NAME 
-         FROM INFORMATION_SCHEMA.COLUMNS 
-         WHERE TABLE_NAME = 'solicitudes'`
-      );
+      // Crear solicitud usando el repositorio de TypeORM
+      const nuevaSolicitud = this.solicitudRepo.create({
+        descripcion_solicitud: dto.descripcion_solicitud,
+        estado: 'PENDIENTE',
+      });
 
-      console.log('Columnas disponibles en solicitudes:', columns.map(c => c.COLUMN_NAME));
+      const solicitudGuardada = await this.solicitudRepo.save(nuevaSolicitud);
 
-      // Insertar con las columnas mínimas que sabemos que existen
-      const result = await queryRunner.query(
-        `INSERT INTO solicitudes (
-          descripcion_solicitud,
-          estado
-        )
-        OUTPUT INSERTED.id_solicitud, INSERTED.descripcion_solicitud, INSERTED.estado
-        VALUES (@0, 'PENDIENTE');`,
-        [dto.descripcion_solicitud],
-      );
-
-      await queryRunner.commitTransaction();
-      
       return {
         success: true,
-        id_solicitud: result[0]?.id_solicitud,
+        id_solicitud: solicitudGuardada.id,
         mensaje: 'Solicitud creada exitosamente',
-        data: result[0],
-        columnas_disponibles: columns.map(c => c.COLUMN_NAME)
+        data: solicitudGuardada
       };
     } catch (error) {
-      await queryRunner.rollbackTransaction();
+      console.error('Error completo:', error);
       throw new Error(`Error al crear solicitud: ${error.message}`);
-    } finally {
-      await queryRunner.release();
     }
   }
 
