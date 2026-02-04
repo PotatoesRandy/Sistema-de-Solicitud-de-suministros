@@ -20,18 +20,25 @@ export class SolicitudesService {
    */
   async crearSolicitud(dto: CreateSolicitudDto, id_usuario: number, usuario_accion: string): Promise<any> {
     try {
+      console.log('En service - ID Usuario:', id_usuario, 'Tipo:', typeof id_usuario);
+      console.log('En service - Usuario Accion:', usuario_accion);
+      
       // Crear solicitud usando el repositorio de TypeORM
       const nuevaSolicitud = this.solicitudRepo.create({
         nombre_solicitud: dto.nombre_solicitud,
         cantidad: dto.cantidad,
-        departamento_solicitud: dto.departamento_solicitud,
+        departamento_solicitud: dto.departamento_solicitud || null,
         id_usuario: id_usuario,
         usuario_accion: usuario_accion,
         estado: 'PENDIENTE',
         fecha_creacion: new Date(),
       });
 
+      console.log('Solicitud antes de guardar:', nuevaSolicitud);
+
       const solicitudGuardada = await this.solicitudRepo.save(nuevaSolicitud);
+
+      console.log('Solicitud después de guardar:', solicitudGuardada);
 
       return {
         success: true,
