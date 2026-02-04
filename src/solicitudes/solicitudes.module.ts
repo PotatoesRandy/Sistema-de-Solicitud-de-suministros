@@ -1,11 +1,11 @@
+// src/solicitudes/solicitudes.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Solicitud } from './entities/solicitud.entity';
 import { SolicitudesService } from './solicitudes.service';
 import { SolicitudesController } from './solicitudes.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Solicitud])],
+  imports: [TypeOrmModule.forFeature([])], // Si usas entidades ORM
   controllers: [SolicitudesController],
   providers: [SolicitudesService],
 })
