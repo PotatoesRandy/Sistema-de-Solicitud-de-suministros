@@ -1,22 +1,31 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { SolicitudDetalle } from './solicitud-detalle.entity';
 
-@Entity('Solicitud')
+@Entity('solicitudes')
 export class Solicitud {
   @PrimaryGeneratedColumn({ name: 'id_solicitud' })
   id: number;
 
-  @Column()
+  @Column({ nullable: true })
   id_departamento: number;
 
   @Column()
   descripcion_solicitud: string;
 
-  @Column({ default: 'Pendiente' })
+  @Column({ nullable: true })
+  id_usuario: number;
+
+  @Column({ nullable: true })
+  usuario_accion: string;
+
+  @Column({ default: 'PENDIENTE' })
   estado: string;
 
-  @Column({ name: 'departamento_solicitud', type: 'varchar', length: 100, nullable: true })
-  departamento_solicitud: string;
+  @Column({ type: 'datetime', default: () => 'GETDATE()' })
+  fecha_creacion: Date;
+
+  @Column({ type: 'datetime', nullable: true })
+  fecha_aprobacion: Date;
 
   @OneToMany(() => SolicitudDetalle, detalle => detalle.solicitud)
   detalles: SolicitudDetalle[];
