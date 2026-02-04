@@ -7,10 +7,10 @@ export class Solicitud {
   id: number;
 
   @Column({ nullable: true })
-  id_departamento: number;
-
-  @Column()
   descripcion_solicitud: string;
+
+  @Column({ nullable: true })
+  id_departamento: number;
 
   @Column({ nullable: true })
   id_usuario: number;
@@ -21,11 +21,8 @@ export class Solicitud {
   @Column({ default: 'PENDIENTE' })
   estado: string;
 
-  @Column({ type: 'datetime', default: () => 'GETDATE()' })
+  @Column({ type: 'datetime', default: () => 'GETDATE()', nullable: true })
   fecha_creacion: Date;
-
-  @Column({ type: 'datetime', nullable: true })
-  fecha_aprobacion: Date;
 
   @OneToMany(() => SolicitudDetalle, detalle => detalle.solicitud)
   detalles: SolicitudDetalle[];
