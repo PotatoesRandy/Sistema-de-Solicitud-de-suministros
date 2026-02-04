@@ -18,15 +18,15 @@ export class SolicitudesService {
   /**
    * Crear una solicitud nueva usando TypeORM Repository
    */
-  async crearSolicitud(dto: CreateSolicitudDto): Promise<any> {
+  async crearSolicitud(dto: CreateSolicitudDto, id_usuario: number, usuario_accion: string): Promise<any> {
     try {
       // Crear solicitud usando el repositorio de TypeORM
       const nuevaSolicitud = this.solicitudRepo.create({
         nombre_solicitud: dto.nombre_solicitud,
         cantidad: dto.cantidad,
         departamento_solicitud: dto.departamento_solicitud,
-        id_usuario: dto.id_usuario,
-        usuario_accion: dto.usuario_accion,
+        id_usuario: id_usuario,
+        usuario_accion: usuario_accion,
         estado: 'PENDIENTE',
         fecha_creacion: new Date(),
       });
@@ -95,8 +95,8 @@ export class SolicitudesService {
   }
 
   // Método para el controlador
-  async crear(dto: CreateSolicitudDto) {
-    return this.crearSolicitud(dto);
+  async crear(dto: CreateSolicitudDto, id_usuario: number, usuario_accion: string) {
+    return this.crearSolicitud(dto, id_usuario, usuario_accion);
   }
 
   // Listar todas las solicitudes
