@@ -5,7 +5,6 @@ import { Connection, Repository } from 'typeorm';
 import { CrearSolicitudDto } from '../auth/dto/crear-solicitud.dto';
 import { AgregarDetalleDto } from '../auth/dto/agregar-detalle.dto';
 import { CrearSolicitudCompletaDto } from '../auth/dto/crear-solicitud-completa.dto';
-import { CreateSolicitudDto } from './dto/create-solicitud.dto';
 import { Solicitud } from './entities/solicitud.entity';
 
 @Injectable()
@@ -98,8 +97,8 @@ export class SolicitudesService {
   }
 
   // Método para el controlador
-  async crear(dto: CreateSolicitudDto) {
-    return this.crearSolicitud(dto as any);
+  async crear(dto: CrearSolicitudDto) {
+    return this.crearSolicitud(dto);
   }
 
   // Listar todas las solicitudes
