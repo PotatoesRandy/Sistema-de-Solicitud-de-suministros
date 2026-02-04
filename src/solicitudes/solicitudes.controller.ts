@@ -10,9 +10,12 @@ export class SolicitudesController {
   @UseGuards(JwtAuthGuard)
   @Post()
   crear(@Body() dto: CreateSolicitudDto, @Req() req) {
-    // Extraer datos del usuario del token JWT
-    const id_usuario = req.user.sub;
+    // Extraer datos del usuario del token JWT y convertir a número
+    const id_usuario = parseInt(req.user.sub);
     const usuario_accion = req.user.username;
+    
+    console.log('ID Usuario:', id_usuario, 'Tipo:', typeof id_usuario);
+    console.log('Usuario Accion:', usuario_accion);
     
     return this.service.crear(dto, id_usuario, usuario_accion);
   }
