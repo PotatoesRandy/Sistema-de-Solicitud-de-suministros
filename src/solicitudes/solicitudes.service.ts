@@ -1,14 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Connection } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Connection, Repository } from 'typeorm';
 import { CrearSolicitudDto } from '../auth/dto/crear-solicitud.dto';
 import { AgregarDetalleDto } from '../auth/dto/agregar-detalle.dto';
 import { CrearSolicitudCompletaDto } from '../auth/dto/crear-solicitud-completa.dto';
+import { CreateSolicitudDto } from './dto/create-solicitud.dto';
+import { Solicitud } from './entities/solicitud.entity';
+
 @Injectable()
 export class SolicitudesService {
   constructor(
     private configService: ConfigService,
     private connection: Connection,
+    @InjectRepository(Solicitud)
+    private solicitudRepo: Repository<Solicitud>,
   ) {}
 
   // resto del código...
@@ -91,9 +97,19 @@ export class SolicitudesService {
     }
   }
 
-  // Listar
-  listar() {
+  // Método para el controlador
+  async crear(dto: CreateSolicitudDto) {
+    return this.crearSolicitud(dto as any);
+  }
+
+  // Listar todas las solicitudes
+  obtenerTodas() {
     return this.solicitudRepo.find();
+  }
+
+  // Listar por estado
+  async listarPorEstado(estado: string) {
+    return this.solicitudRepo.find({ where: { estado } });
   }
 
   // Buscar
