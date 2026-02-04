@@ -1,4 +1,4 @@
-import { IsString, IsInt, IsOptional, Length } from 'class-validator';
+import { IsString, IsInt, IsOptional, Length, IsNotEmpty } from 'class-validator';
 
 export class CreateSolicitudDto {
   @IsString()
@@ -11,4 +11,12 @@ export class CreateSolicitudDto {
   @IsString()
   @IsOptional()
   departamento_solicitud?: string;
+
+  @IsInt()
+  @IsNotEmpty()
+  id_usuario: number;
+
+  @IsString()
+  @IsNotEmpty()
+  usuario_accion: string;
 }
