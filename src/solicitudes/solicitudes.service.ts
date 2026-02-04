@@ -27,7 +27,7 @@ export class SolicitudesService {
       const nuevaSolicitud = this.solicitudRepo.create({
         nombre_solicitud: dto.nombre_solicitud,
         cantidad: dto.cantidad,
-        departamento_solicitud: dto.departamento_solicitud || null,
+        departamento_solicitud: dto.departamento_solicitud,
         id_usuario: id_usuario,
         usuario_accion: usuario_accion,
         estado: 'PENDIENTE',
@@ -42,7 +42,7 @@ export class SolicitudesService {
 
       return {
         success: true,
-        id_solicitud: solicitudGuardada.id,
+        id_solicitud: solicitudGuardada.id_solicitud,
         mensaje: 'Solicitud creada exitosamente',
         data: solicitudGuardada
       };
@@ -118,7 +118,7 @@ export class SolicitudesService {
 
   // Buscar
   async buscar(id: number) {
-    const solicitud = await this.solicitudRepo.findOne({ where: { id } });
+    const solicitud = await this.solicitudRepo.findOne({ where: { id_solicitud: id } });
     if (!solicitud) return []    
    // if (!solicitud) throw new NotFoundException('Solicitud no encontrada');
     return solicitud;
