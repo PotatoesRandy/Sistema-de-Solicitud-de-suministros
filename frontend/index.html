@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Solicitud de Suministros</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Menu lateral -->
+    <div class="menu-slide">
+        <div class="logo-detail">
+            <img src="assets/images/logo.png" alt="Logo" style="width: 50px;">
+            <span class="logo-name">SUMINISTROS</span>
+        </div>
+        <ul class="nav-links">
+            <li>
+                <a href="index.html">
+                    <i class="ri-home-line"></i>
+                    <span class="link-name">Inicio</span>
+                </a>
+            </li>
+            <li>
+                <a href="registro.html">
+                    <i class="ri-user-add-line"></i>
+                    <span class="link-name">Registro</span>
+                </a>
+            </li>
+            <li>
+                <a href="login.html">
+                    <i class="ri-login-box-line"></i>
+                    <span class="link-name">Login</span>
+                </a>
+            </li>
+            <li>
+                <a href="solicitudes.html">
+                    <i class="ri-file-list-line"></i>
+                    <span class="link-name">Solicitudes</span>
+                </a>
+            </li>
+        </ul>
+        <div class="profile-details">
+            <div class="profile-content">
+                <img src="https://via.placeholder.com/52" alt="Profile">
+                <div class="name-job">
+                    <div class="profile-name">Invitado</div>
+                    <div class="job">Sistema</div>
+                </div>
+            </div>
+            <i class="ri-logout-circle-r-line"></i>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <section class="home-section">
+        <div class="home-content">
+            <i class="ri-menu-line"></i>
+            <span class="text">Sistema de Solicitud de Suministros</span>
+        </div>
+
+        <div class="main-content">
+            <div class="header-container">
+                <div>
+                    <h1>Bienvenido al Sistema</h1>
+                    <span>Gestiona tus solicitudes de suministros de manera eficiente</span>
+                </div>
+                <ol>
+                    <li><a href="index.html">Inicio</a></li>
+                </ol>
+            </div>
+
+            <div style="padding: 30px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center;">
+                        <i class="ri-file-list-3-line" style="font-size: 48px; color: #0f5db2; margin-bottom: 15px;"></i>
+                        <h3 style="color: #34454d; margin-bottom: 10px;">Gestión de Solicitudes</h3>
+                        <p style="color: #666;">Crea y gestiona tus solicitudes de suministros</p>
+                        <a href="solicitudes.html" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background: #0f5db2; color: white; text-decoration: none; border-radius: 5px;">Ver Solicitudes</a>
+                    </div>
+
+                    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center;">
+                        <i class="ri-check-double-line" style="font-size: 48px; color: #10b981; margin-bottom: 15px;"></i>
+                        <h3 style="color: #34454d; margin-bottom: 10px;">Sistema de Aprobaciones</h3>
+                        <p style="color: #666;">Aprobación por roles y permisos</p>
+                        <a href="login.html" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background: #10b981; color: white; text-decoration: none; border-radius: 5px;">Iniciar Sesión</a>
+                    </div>
+
+                    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center;">
+                        <i class="ri-bar-chart-line" style="font-size: 48px; color: #f59e0b; margin-bottom: 15px;"></i>
+                        <h3 style="color: #34454d; margin-bottom: 10px;">Seguimiento</h3>
+                        <p style="color: #666;">Rastrea el estado de tus solicitudes</p>
+                        <a href="registro.html" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background: #f59e0b; color: white; text-decoration: none; border-radius: 5px;">Registrarse</a>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; padding: 30px; background: white; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <h2 style="color: #0f5db2; margin-bottom: 20px;">Características del Sistema</h2>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 10px 0; border-bottom: 1px solid #e4e9f7; color: #34454d;">
+                            <i class="ri-check-line" style="color: #10b981; margin-right: 10px;"></i>
+                            Gestión completa de solicitudes de suministros
+                        </li>
+                        <li style="padding: 10px 0; border-bottom: 1px solid #e4e9f7; color: #34454d;">
+                            <i class="ri-check-line" style="color: #10b981; margin-right: 10px;"></i>
+                            Sistema de roles y permisos (RBAC)
+                        </li>
+                        <li style="padding: 10px 0; border-bottom: 1px solid #e4e9f7; color: #34454d;">
+                            <i class="ri-check-line" style="color: #10b981; margin-right: 10px;"></i>
+                            Seguimiento en tiempo real del estado
+                        </li>
+                        <li style="padding: 10px 0; border-bottom: 1px solid #e4e9f7; color: #34454d;">
+                            <i class="ri-check-line" style="color: #10b981; margin-right: 10px;"></i>
+                            Notificaciones automáticas
+                        </li>
+                        <li style="padding: 10px 0; color: #34454d;">
+                            <i class="ri-check-line" style="color: #10b981; margin-right: 10px;"></i>
+                            Reportes y estadísticas
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <h3>&copy; 2026 Sistema de Solicitud de Suministros - <a href="#">PotatoesRandy</a></h3>
+    </footer>
+
+    <script src="assets/js/aside.js"></script>
+</body>
+</html>
