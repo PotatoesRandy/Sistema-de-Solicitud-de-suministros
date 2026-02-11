@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Sistema de Solicitud de Suministros</title>
+  <link rel="stylesheet" href="./assets/css/styles.css" />
+</head>
+<body>
+  <div class="login-wrapper">
+    <div class="login-card">
+      <h1 class="login-title">Sistema de Solicitud de Suministros</h1>
+      <p class="login-subtitle">Inicie sesión con sus credenciales institucionales</p>
+
+      <form class="login-form" id="loginForm">
+        <div class="form-group">
+          <label for="username">Usuario</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            autocomplete="username"
+            required
+            placeholder="ej. j.perez"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            autocomplete="current-password"
+            required
+            placeholder="••••••••"
+          />
+        </div>
+
+        <div class="form-footer">
+          <label class="remember">
+            <input type="checkbox" name="remember" id="remember" />
+            <span>Recordar sesión en este equipo</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn-primary">
+          Iniciar sesión
+        </button>
+        
+        <div id="errorMsg" class="error-msg" style="display:none;"></div>
+      </form>
+
+      <div class="login-meta">
+        <p>Los usuarios se crean en el área de Tecnología.</p>
+        <p>Si tiene problemas de acceso, contacte a Mesa de Ayuda.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const errorMsg = document.getElementById('errorMsg');
+      
+      try {
+        const response = await fetch('http://localhost:3000/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Guardar token
+          localStorage.setItem('access_token', data.access_token);
+          errorMsg.style.display = 'none';
+          
+          // Redirigir al dashboard (cuando lo crees)
+          alert('Login exitoso! Token guardado.');
+          // window.location.href = '/dashboard.html';
+        } else {
+          errorMsg.textContent = data.message || 'Error de autenticación';
+          errorMsg.style.display = 'block';
+        }
+      } catch (error) {
+        errorMsg.textContent = 'Error de conexión con el servidor';
+        errorMsg.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
