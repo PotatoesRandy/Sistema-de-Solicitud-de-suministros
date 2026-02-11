@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+﻿import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { SolicitudDetalle } from './solicitud-detalle.entity';
 
 @Entity('solicitudes')
@@ -26,6 +26,9 @@ export class Solicitud {
 
   @Column({ type: 'datetime', nullable: true })
   fecha_creacion: Date;
+
+  @Column({ unique: true, nullable: false })
+  codigo_autorizacion: string;
 
   @OneToMany(() => SolicitudDetalle, detalle => detalle.solicitud)
   detalles: SolicitudDetalle[];

@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Almacén - Sistema de Solicitud de Suministros</title>
+  <link rel="stylesheet" href="./assets/css/dashboard.css" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="navbar-container">
+      <h1 class="navbar-title">📦 Almacén - Aprobación de Solicitudes</h1>
+      <div class="navbar-actions">
+        <span class="user-name" id="userName">Cargando...</span>
+        <button class="btn-logout" id="btnLogout">Cerrar Sesión</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="dashboard-container">
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-section="pendientes">
+          <span class="nav-icon">⏳</span>
+          <span>Solicitudes Pendientes</span>
+        </a>
+        <a href="#" class="nav-item" data-section="historial">
+          <span class="nav-icon">📋</span>
+          <span>Historial</span>
+        </a>
+        <a href="#" class="nav-item" data-section="perfil">
+          <span class="nav-icon">👤</span>
+          <span>Mi Perfil</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <!-- Sección: Solicitudes Pendientes -->
+      <section id="section-pendientes" class="content-section active">
+        <div class="section-header">
+          <h2>Solicitudes Pendientes de Aprobación</h2>
+        </div>
+
+        <div class="stats-cards">
+          <div class="stat-card stat-pending">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-info">
+              <p class="stat-label">Pendientes</p>
+              <p class="stat-value" id="statPendiente">0</p>
+            </div>
+          </div>
+          <div class="stat-card stat-approved">
+            <div class="stat-icon">✅</div>
+            <div class="stat-info">
+              <p class="stat-label">Aprobadas Hoy</p>
+              <p class="stat-value" id="statAprobadaHoy">0</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="solicitudes-grid" id="solicitudesPendientes">
+          <p class="loading">Cargando solicitudes...</p>
+        </div>
+      </section>
+
+      <!-- Sección: Historial -->
+      <section id="section-historial" class="content-section">
+        <div class="section-header">
+          <h2>Historial de Solicitudes</h2>
+          <div class="filter-buttons">
+            <button class="btn-filter active" data-filter="TODAS">Todas</button>
+            <button class="btn-filter" data-filter="APROBADA">Aprobadas</button>
+            <button class="btn-filter" data-filter="RECHAZADA">Rechazadas</button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>Código</th>
+                <th>Fecha</th>
+                <th>Artículo</th>
+                <th>Cantidad</th>
+                <th>Solicitante</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tablaHistorial">
+              <tr>
+                <td colspan="7" class="loading">Cargando historial...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Sección: Perfil -->
+      <section id="section-perfil" class="content-section">
+        <div class="section-header">
+          <h2>Mi Perfil</h2>
+        </div>
+
+        <div class="profile-card">
+          <div class="profile-avatar">
+            <div class="avatar-circle" id="avatarInitials">A</div>
+          </div>
+          <div class="profile-info">
+            <div class="info-row">
+              <span class="info-label">Usuario:</span>
+              <span class="info-value" id="profileUsuario">-</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Nombre:</span>
+              <span class="info-value" id="profileNombre">-</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Rol:</span>
+              <span class="info-value" id="profileRol">-</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal de Autorización -->
+  <div id="modalAutorizacion" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">Aprobar Solicitud</h3>
+        <button class="modal-close" onclick="cerrarModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="solicitud-detalle" id="modalDetalle"></div>
+        
+        <div class="form-group">
+          <label for="codigoAutorizacion">Código de Autorización <span class="required">*</span></label>
+          <input
+            type="text"
+            id="codigoAutorizacion"
+            placeholder="Ingrese el código proporcionado al solicitante"
+            style="text-transform: uppercase;"
+          />
+          <p class="help-text">El solicitante debe proporcionarle este código</p>
+        </div>
+
+        <div id="modalError" class="error-msg" style="display:none;"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="cerrarModal()">Cancelar</button>
+        <button class="btn-primary" id="btnConfirmarAccion">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./assets/js/dashboard-almacen.js"></script>
+</body>
+</html>

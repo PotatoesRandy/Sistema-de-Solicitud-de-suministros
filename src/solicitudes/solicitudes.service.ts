@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+﻿import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Connection, Repository } from 'typeorm';
@@ -14,6 +14,15 @@ export class SolicitudesService {
     @InjectRepository(Solicitud)
     private solicitudRepo: Repository<Solicitud>,
   ) {}
+
+  /**
+   * Generar código de autorización único
+   */
+  private generarCodigoAutorizacion(): string {
+    const timestamp = Date.now().toString(36).toUpperCase();
+    const random = Math.random().toString(36).substring(2, 8).toUpperCase();
+    return `${timestamp}-${random}`;
+  }
 
   /**
    * Crear una solicitud nueva usando TypeORM Repository
@@ -32,17 +41,17 @@ export class SolicitudesService {
         usuario_accion: usuario_accion,
         estado: 'PENDIENTE',
         fecha_creacion: new Date(),
+        codigo_autorizacion: this.generarCodigoAutorizacion(),
       });
 
       console.log('Solicitud antes de guardar:', nuevaSolicitud);
-
       const solicitudGuardada = await this.solicitudRepo.save(nuevaSolicitud);
-
       console.log('Solicitud después de guardar:', solicitudGuardada);
 
       return {
         success: true,
         id_solicitud: solicitudGuardada.id_solicitud,
+        codigo_autorizacion: solicitudGuardada.codigo_autorizacion,
         mensaje: 'Solicitud creada exitosamente',
         data: solicitudGuardada
       };
@@ -77,16 +86,17 @@ export class SolicitudesService {
       // Insertar detalle
       await queryRunner.query(
         `INSERT INTO Solicitud_Detalle (
-          id_solicitud,
-          id_producto,
-          cantidad_solicitada,
-          estado_detalle
-        )
-        VALUES (@0, @1, @2, 'PENDIENTE');`,
+        id_solicitud,
+        id_producto,
+        cantidad_solicitada,
+        estado_detalle
+      )
+      VALUES (@0, @1, @2, 'PENDIENTE');`,
         [id_solicitud, dto.id_producto, dto.cantidad_solicitada],
       );
 
       await queryRunner.commitTransaction();
+
       return {
         success: true,
         mensaje: 'Producto agregado a la solicitud',
@@ -119,16 +129,52 @@ export class SolicitudesService {
   // Buscar
   async buscar(id: number) {
     const solicitud = await this.solicitudRepo.findOne({ where: { id_solicitud: id } });
-    if (!solicitud) return []    
-   // if (!solicitud) throw new NotFoundException('Solicitud no encontrada');
+    if (!solicitud) return [] 
+    // if (!solicitud) throw new NotFoundException('Solicitud no encontrada');
     return solicitud;
   }
 
-  // Aprobar (sin modificar estado porque no existe en la BD)
-  async aprobar(id: number) {
-    const solicitud = await this.buscar(id);
-    // Por ahora solo retorna la solicitud
-    // Más adelante puedes agregar lógica de aprobación
-    return solicitud;
+  // Aprobar con código de autorización
+  async aprobar(id: number, codigo: string) {
+    const solicitud = await this.solicitudRepo.findOne({ where: { id_solicitud: id } });
+    
+    if (!solicitud) {
+      throw new Error('Solicitud no encontrada');
+    }
+
+    if (solicitud.codigo_autorizacion !== codigo) {
+      throw new Error('Código de autorización inválido');
+    }
+
+    solicitud.estado = 'APROBADA';
+    await this.solicitudRepo.save(solicitud);
+
+    return {
+      success: true,
+      mensaje: 'Solicitud aprobada exitosamente',
+      data: solicitud
+    };
+  }
+
+  // Rechazar con código
+  async rechazar(id: number, codigo: string) {
+    const solicitud = await this.solicitudRepo.findOne({ where: { id_solicitud: id } });
+    
+    if (!solicitud) {
+      throw new Error('Solicitud no encontrada');
+    }
+
+    if (solicitud.codigo_autorizacion !== codigo) {
+      throw new Error('Código de autorización inválido');
+    }
+
+    solicitud.estado = 'RECHAZADA';
+    await this.solicitudRepo.save(solicitud);
+
+    return {
+      success: true,
+      mensaje: 'Solicitud rechazada',
+      data: solicitud
+    };
   }
 }

@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Sistema de Solicitud de Suministros</title>
+  <link rel="stylesheet" href="./assets/css/dashboard.css" />
+</head>
+<body>
+  <!-- Header / Navbar -->
+  <header class="navbar">
+    <div class="navbar-container">
+      <h1 class="navbar-title">Sistema de Solicitud de Suministros</h1>
+      <div class="navbar-actions">
+        <span class="user-name" id="userName">Cargando...</span>
+        <button class="btn-logout" id="btnLogout">Cerrar Sesión</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-section="solicitudes">
+          <span class="nav-icon">📋</span>
+          <span>Mis Solicitudes</span>
+        </a>
+        <a href="#" class="nav-item" data-section="nueva">
+          <span class="nav-icon">➕</span>
+          <span>Nueva Solicitud</span>
+        </a>
+        <a href="#" class="nav-item" data-section="perfil">
+          <span class="nav-icon">👤</span>
+          <span>Mi Perfil</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Content Area -->
+    <main class="content">
+      <!-- Sección: Mis Solicitudes -->
+      <section id="section-solicitudes" class="content-section active">
+        <div class="section-header">
+          <h2>Requerimiento de Suministros</h2>
+          <button class="btn-primary" id="btnNuevaSolicitud">+ Nueva Solicitud</button>
+        </div>
+
+        <div class="stats-cards">
+          <div class="stat-card">
+            <div class="stat-icon">📝</div>
+            <div class="stat-info">
+              <p class="stat-label">Total</p>
+              <p class="stat-value" id="statTotal">0</p>
+            </div>
+          </div>
+          <div class="stat-card stat-pending">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-info">
+              <p class="stat-label">Pendientes</p>
+              <p class="stat-value" id="statPendiente">0</p>
+            </div>
+          </div>
+          <div class="stat-card stat-approved">
+            <div class="stat-icon">✅</div>
+            <div class="stat-info">
+              <p class="stat-label">Aprobadas</p>
+              <p class="stat-value" id="statAprobada">0</p>
+            </div>
+          </div>
+          <div class="stat-card stat-rejected">
+            <div class="stat-icon">❌</div>
+            <div class="stat-info">
+              <p class="stat-label">Rechazadas</p>
+              <p class="stat-value" id="statRechazada">0</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>Fecha</th>
+                <th>Artículo/Suministro</th>
+                <th>Cantidad</th>
+                <th>Departamento</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaSolicitudes">
+              <tr>
+                <td colspan="7" class="loading">Cargando solicitudes...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Sección: Nueva Solicitud -->
+      <section id="section-nueva" class="content-section">
+        <div class="section-header">
+          <h2>Nueva Solicitud de Suministro</h2>
+        </div>
+
+        <form class="form-solicitud" id="formNuevaSolicitud">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="nombre_solicitud">Artículo/Suministro <span class="required">*</span></label>
+              <input
+                type="text"
+                id="nombre_solicitud"
+                name="nombre_solicitud"
+                maxlength="150"
+                required
+                placeholder="Ej: RESMA DE PAPEL BOND 20 TAMAÑO 8 1/2 X 11"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="cantidad">Cantidad <span class="required">*</span></label>
+              <input
+                type="number"
+                id="cantidad"
+                name="cantidad"
+                min="1"
+                required
+                placeholder="Ej: 25"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="departamento_solicitud">Departamento/Dirección</label>
+              <input
+                type="text"
+                id="departamento_solicitud"
+                name="departamento_solicitud"
+                placeholder="Ej: Dirección de Infraestructura Urbana"
+              />
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" id="btnCancelar">Cancelar</button>
+            <button type="submit" class="btn-primary">Enviar Solicitud</button>
+          </div>
+          
+          <div id="formError" class="error-msg" style="display:none;"></div>
+          <div id="formSuccess" class="success-msg" style="display:none;"></div>
+        </form>
+      </section>
+
+      <!-- Sección: Mi Perfil -->
+      <section id="section-perfil" class="content-section">
+        <div class="section-header">
+          <h2>Mi Perfil</h2>
+        </div>
+
+        <div class="profile-card">
+          <div class="profile-avatar">
+            <div class="avatar-circle" id="avatarInitials">U</div>
+          </div>
+          <div class="profile-info">
+            <div class="info-row">
+              <span class="info-label">Usuario:</span>
+              <span class="info-value" id="profileUsuario">-</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Nombre:</span>
+              <span class="info-value" id="profileNombre">-</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Email:</span>
+              <span class="info-value" id="profileEmail">-</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Rol:</span>
+              <span class="info-value" id="profileRol">-</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="./assets/js/dashboard.js"></script>
+</body>
+</html>

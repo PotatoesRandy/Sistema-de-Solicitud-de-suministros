@@ -14,10 +14,10 @@
 
       <form class="login-form" id="loginForm">
         <div class="form-group">
-          <label for="usuario">Usuario</label>
+          <label for="username">Usuario</label>
           <input
             type="text"
-            id="usuario"
+            id="username"
             name="usuario"
             autocomplete="username"
             required
@@ -26,10 +26,10 @@
         </div>
 
         <div class="form-group">
-          <label for="contrasena">Contraseña</label>
+          <label for="password">Contraseña</label>
           <input
             type="password"
-            id="contrasena"
+            id="password"
             name="contrasena"
             autocomplete="current-password"
             required
@@ -62,8 +62,8 @@
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       
-      const usuario = document.getElementById('usuario').value;
-      const contrasena = document.getElementById('contrasena').value;
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
       const errorMsg = document.getElementById('errorMsg');
       
       try {
@@ -72,7 +72,7 @@
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ usuario, contrasena })
+          body: JSON.stringify({ usuario: username, contrasena: password })
         });
 
         const data = await response.json();
@@ -84,26 +84,7 @@
           
           // Redirigir al dashboard (cuando lo crees)
           alert('Login exitoso! Token guardado.');
-          // Obtener perfil para ver el rol
-          const profileResponse = await fetch('http://localhost:3000/auth/profile', {
-            headers: {
-              'Authorization': `Bearer ${data.access_token}`
-            }
-          });
-          
-          if (profileResponse.ok) {
-            const profile = await profileResponse.json();
-            const rolNombre = profile.rol?.nombre_rol?.toLowerCase() || '';
-            
-            // Redirigir según el rol
-            if (rolNombre.includes('almacen') || rolNombre.includes('almacén')) {
-              window.location.href = '/dashboard-almacen.html';
-            } else {
-              window.location.href = '/dashboard.html';
-            }
-          } else {
-            window.location.href = '/dashboard.html';
-          }
+          // window.location.href = '/dashboard.html';
         } else {
           errorMsg.textContent = data.message || 'Error de autenticación';
           errorMsg.style.display = 'block';
@@ -116,5 +97,4 @@
   </script>
 </body>
 </html>
-
 

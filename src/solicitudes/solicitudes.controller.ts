@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param, Patch, HttpException, HttpStatus, UseGuards, Req } from '@nestjs/common';
+﻿import { Controller, Post, Get, Body, Param, Patch, HttpException, HttpStatus, UseGuards, Req } from '@nestjs/common';
 import { SolicitudesService } from './solicitudes.service';
 import { CreateSolicitudDto } from './dto/create-solicitud.dto';
 import { JwtAuthGuard } from '../auth/jwt/jwt.guard';
@@ -40,9 +40,20 @@ export class SolicitudesController {
   }
 
   @Patch(':id/aprobar')
-  aprobar(@Param('id') id: number) {
-    return this.service.aprobar(id);
+  async aprobar(@Param('id') id: number, @Body() body: { codigo: string }) {
+    try {
+      return await this.service.aprobar(id, body.codigo);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
-  
+  @Patch(':id/rechazar')
+  async rechazar(@Param('id') id: number, @Body() body: { codigo: string }) {
+    try {
+      return await this.service.rechazar(id, body.codigo);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
 }
